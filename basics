@@ -1,0 +1,516 @@
+# 📚 SQL - Consultas, Filtros e Operadores Fundamentais
+
+## 📌 18. Tabelas Relacionais e Keys
+
+As tabelas relacionais permitem organizar os dados em diferentes tabelas, evitando duplicação de informações. Para conectar essas tabelas utilizamos as **Keys (Chaves)**.
+
+### Primary Key (PK)
+
+A **Primary Key** é uma coluna que identifica cada registro de forma única dentro de uma tabela. Não pode conter valores repetidos nem nulos.
+
+Exemplo:
+
+```sql
+CREATE TABLE clientes (
+    id INT PRIMARY KEY,
+    nome VARCHAR(100)
+);
+```
+
+### Foreign Key (FK)
+
+A **Foreign Key** cria um relacionamento entre duas tabelas.
+
+```sql
+CREATE TABLE pedidos (
+    id INT PRIMARY KEY,
+    cliente_id INT,
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id)
+);
+```
+
+Neste exemplo, cada pedido pertence a um cliente através da coluna `cliente_id`.
+
+---
+
+# 📌 19. USE e SELECT
+
+## USE
+
+Seleciona o banco de dados que será utilizado.
+
+```sql
+USE padaria;
+```
+
+Depois disso, todos os comandos serão executados nesse banco.
+
+---
+
+## SELECT
+
+O comando `SELECT` é utilizado para consultar dados.
+
+Selecionando todas as colunas:
+
+```sql
+SELECT * FROM clientes;
+```
+
+Selecionando colunas específicas:
+
+```sql
+SELECT nome, idade
+FROM clientes;
+```
+
+---
+
+# 📌 20. ORDER BY
+
+Ordena os resultados de uma consulta.
+
+### Ordem Crescente
+
+```sql
+SELECT *
+FROM produtos
+ORDER BY preco ASC;
+```
+
+### Ordem Decrescente
+
+```sql
+SELECT *
+FROM produtos
+ORDER BY preco DESC;
+```
+
+Muito utilizado para ordenar por:
+
+- Nome
+- Preço
+- Data
+- Idade
+- Salário
+
+---
+
+# 📌 21. WHERE
+
+O `WHERE` filtra registros conforme uma condição.
+
+```sql
+SELECT *
+FROM clientes
+WHERE cidade = 'São Paulo';
+```
+
+Somente clientes da cidade informada serão retornados.
+
+### Comentário de uma linha
+
+Comentários servem para documentar o código.
+
+```sql
+-- Consulta de clientes
+SELECT * FROM clientes;
+```
+
+Tudo após `--` será ignorado.
+
+---
+
+# 📌 22. Modificando uma Coluna
+
+Utilizamos `ALTER TABLE`.
+
+```sql
+ALTER TABLE clientes
+MODIFY idade SMALLINT;
+```
+
+Permite alterar:
+
+- Tipo de dado
+- Tamanho
+- Restrições da coluna
+
+---
+
+# 📌 23. Mais Variações do WHERE
+
+O `WHERE` aceita diversos operadores de comparação.
+
+Maior que:
+
+```sql
+WHERE idade > 18
+```
+
+Menor que:
+
+```sql
+WHERE idade < 18
+```
+
+Maior ou igual:
+
+```sql
+WHERE salario >= 3000
+```
+
+Menor ou igual:
+
+```sql
+WHERE salario <= 5000
+```
+
+Diferente:
+
+```sql
+WHERE cidade <> 'Rio de Janeiro'
+```
+
+Também pode ser escrito como:
+
+```sql
+WHERE cidade != 'Rio de Janeiro'
+```
+
+---
+
+# 📌 24. Operadores AND, OR e NOT
+
+## AND
+
+Todas as condições precisam ser verdadeiras.
+
+```sql
+SELECT *
+FROM clientes
+WHERE idade >= 18
+AND cidade = 'São Paulo';
+```
+
+---
+
+## OR
+
+Pelo menos uma condição precisa ser verdadeira.
+
+```sql
+SELECT *
+FROM clientes
+WHERE cidade = 'São Paulo'
+OR cidade = 'Belo Horizonte';
+```
+
+---
+
+## NOT
+
+Inverte uma condição.
+
+```sql
+SELECT *
+FROM clientes
+WHERE NOT cidade = 'São Paulo';
+```
+
+Retorna todos os clientes que não moram em São Paulo.
+
+---
+
+# 📌 25. Operador IN
+
+O operador `IN` verifica se um valor pertence a uma lista.
+
+Ao invés de:
+
+```sql
+WHERE cidade = 'SP'
+OR cidade = 'RJ'
+OR cidade = 'MG'
+```
+
+Podemos escrever:
+
+```sql
+WHERE cidade IN ('SP', 'RJ', 'MG');
+```
+
+O código fica mais limpo e legível.
+
+---
+
+# 📌 26. Operador BETWEEN
+
+Seleciona valores dentro de um intervalo.
+
+Exemplo com números:
+
+```sql
+SELECT *
+FROM produtos
+WHERE preco BETWEEN 10 AND 50;
+```
+
+Retorna produtos com preço entre **10 e 50**, inclusive.
+
+Também pode ser utilizado com datas.
+
+```sql
+WHERE data_venda BETWEEN '2025-01-01' AND '2025-12-31';
+```
+
+---
+
+# 📌 27. Operador LIKE
+
+Utilizado para pesquisar padrões em textos.
+
+### Começa com
+
+```sql
+WHERE nome LIKE 'Jo%';
+```
+
+Exemplos encontrados:
+
+- João
+- Jose
+- Jonathan
+
+---
+
+### Termina com
+
+```sql
+WHERE nome LIKE '%son';
+```
+
+Exemplos:
+
+- Anderson
+- Emerson
+
+---
+
+### Contém
+
+```sql
+WHERE nome LIKE '%ana%';
+```
+
+Exemplos:
+
+- Ana
+- Mariana
+- Anabela
+
+---
+
+### Caracteres curingas
+
+`%`
+
+Representa qualquer quantidade de caracteres.
+
+`_`
+
+Representa exatamente um caractere.
+
+Exemplo:
+
+```sql
+WHERE nome LIKE '_aria';
+```
+
+Encontra:
+
+- Maria
+- Daria
+
+---
+
+# 📌 28. Leitura Complementar - LIKE
+
+O operador `LIKE` é muito utilizado em sistemas de pesquisa.
+
+Exemplos:
+
+- Busca de clientes
+- Busca de produtos
+- Busca de cidades
+- Barras de pesquisa
+- Sistemas de login
+
+Apesar de simples, pode perder desempenho em tabelas muito grandes quando utilizado com `%` no início da palavra.
+
+---
+
+# 📌 29. Operador IS NULL
+
+Verifica valores nulos.
+
+```sql
+SELECT *
+FROM funcionarios
+WHERE telefone IS NULL;
+```
+
+Retorna registros sem telefone.
+
+Também existe:
+
+```sql
+SELECT *
+FROM funcionarios
+WHERE telefone IS NOT NULL;
+```
+
+Retorna apenas registros que possuem telefone.
+
+---
+
+# 📌 30. Operador LIMIT
+
+Limita a quantidade de resultados.
+
+```sql
+SELECT *
+FROM produtos
+LIMIT 5;
+```
+
+Retorna somente os cinco primeiros registros.
+
+Muito utilizado para:
+
+- Paginação
+- Dashboards
+- Relatórios
+- Testes
+
+---
+
+# 📌 31. Operador REGEXP
+
+Permite realizar pesquisas utilizando Expressões Regulares (Regex).
+
+Exemplo:
+
+```sql
+SELECT *
+FROM clientes
+WHERE nome REGEXP '^A';
+```
+
+Retorna nomes que começam com A.
+
+Outro exemplo:
+
+```sql
+SELECT *
+FROM clientes
+WHERE nome REGEXP 'Silva$';
+```
+
+Retorna nomes que terminam com Silva.
+
+O `REGEXP` é muito mais poderoso que o `LIKE`, permitindo pesquisas complexas.
+
+---
+
+# 📌 32. Operadores Matemáticos
+
+São utilizados para realizar cálculos.
+
+| Operador | Função |
+|----------|---------|
+| + | Soma |
+| - | Subtração |
+| * | Multiplicação |
+| / | Divisão |
+| % | Resto da divisão (Módulo) |
+
+Exemplo:
+
+```sql
+SELECT preco * quantidade AS total
+FROM vendas;
+```
+
+---
+
+# 📌 33. Operadores de Comparação
+
+Utilizados para comparar valores.
+
+| Operador | Significado |
+|----------|-------------|
+| = | Igual |
+| > | Maior que |
+| < | Menor que |
+| >= | Maior ou igual |
+| <= | Menor ou igual |
+| <> | Diferente |
+| != | Diferente |
+
+Exemplo:
+
+```sql
+SELECT *
+FROM produtos
+WHERE preco >= 100;
+```
+
+---
+
+# 📌 34. Operadores Lógicos
+
+Os operadores lógicos permitem combinar condições.
+
+| Operador | Função |
+|----------|---------|
+| AND | Todas as condições devem ser verdadeiras |
+| OR | Pelo menos uma condição deve ser verdadeira |
+| NOT | Inverte uma condição |
+
+Exemplo:
+
+```sql
+SELECT *
+FROM funcionarios
+WHERE setor = 'TI'
+AND salario > 5000
+AND ativo = TRUE;
+```
+
+---
+
+# 🎯 Resumo
+
+Nesta etapa foram estudados os principais comandos utilizados para consultar e filtrar dados em bancos de dados relacionais.
+
+Principais conceitos aprendidos:
+
+- Estrutura de tabelas relacionais.
+- Primary Keys e Foreign Keys.
+- Seleção de banco de dados com `USE`.
+- Consultas utilizando `SELECT`.
+- Ordenação de resultados com `ORDER BY`.
+- Filtros utilizando `WHERE`.
+- Alteração de tabelas com `ALTER TABLE`.
+- Operadores lógicos (`AND`, `OR` e `NOT`).
+- Pesquisa em listas utilizando `IN`.
+- Intervalos com `BETWEEN`.
+- Busca por padrões utilizando `LIKE`.
+- Verificação de valores nulos com `IS NULL`.
+- Limitação de resultados utilizando `LIMIT`.
+- Pesquisas avançadas com `REGEXP`.
+- Operadores matemáticos.
+- Operadores de comparação.
+
+Esses comandos formam a base da linguagem SQL e são essenciais para consultas em bancos de dados, análise de informações, desenvolvimento de aplicações e áreas como Blue Team, SOC, Threat Hunting e Forense Digital.
