@@ -1,0 +1,339 @@
+# INNER JOIN, Alias, Múltiplas Tabelas e UNION
+
+## Introdução
+
+Em bancos de dados relacionais, as informações normalmente são distribuídas entre diversas tabelas para evitar redundância e garantir maior organização dos dados. Para consultar essas informações de forma integrada, utilizamos operações como **JOIN** e **UNION**, que permitem combinar dados de diferentes tabelas de maneira eficiente.
+
+Esses conceitos são fundamentais para qualquer desenvolvedor, analista de dados ou profissional de Banco de Dados, sendo utilizados diariamente em sistemas corporativos.
+
+---
+
+# INNER JOIN
+
+O **INNER JOIN** é utilizado para combinar registros de duas ou mais tabelas que possuam uma relação entre si.
+
+Ele retorna **apenas os registros que possuem correspondência em ambas as tabelas**.
+
+## Sintaxe
+
+```sql
+SELECT coluna1, coluna2
+FROM tabela1
+INNER JOIN tabela2
+ON tabela1.chave = tabela2.chave;
+```
+
+## Exemplo
+
+Tabela `customer`
+
+| customer_id | first_name |
+|-------------|------------|
+| 1 | Rafael |
+| 2 | Maria |
+
+Tabela `payment`
+
+| payment_id | customer_id | amount |
+|------------|-------------|--------|
+| 10 | 1 | 5.99 |
+| 11 | 2 | 7.99 |
+
+Consulta:
+
+```sql
+SELECT first_name, amount
+FROM customer
+INNER JOIN payment
+ON customer.customer_id = payment.customer_id;
+```
+
+Resultado
+
+| first_name | amount |
+|------------|--------|
+| Rafael | 5.99 |
+| Maria | 7.99 |
+
+Neste exemplo, o SQL encontrou registros que possuem o mesmo **customer_id** nas duas tabelas e uniu essas informações.
+
+---
+
+# Como o INNER JOIN funciona
+
+Imagine duas tabelas:
+
+```text
+Customer                Payment
+
+ID  Nome                ID Cliente  Valor
+
+1   Rafael              1           5.99
+2   Maria               2           7.99
+3   João
+```
+
+Após o JOIN:
+
+```text
+Rafael  5.99
+Maria   7.99
+```
+
+Observe que João não aparece porque não possui pagamento registrado.
+
+---
+
+# Filtrando utilizando JOIN
+
+Após realizar um JOIN, podemos aplicar filtros normalmente utilizando o **WHERE**.
+
+## Exemplo
+
+```sql
+SELECT first_name, amount
+FROM customer
+INNER JOIN payment
+ON customer.customer_id = payment.customer_id
+WHERE amount > 5;
+```
+
+Resultado
+
+```text
+Maria    7.99
+```
+
+Neste caso, primeiro ocorre o JOIN entre as tabelas e somente depois o filtro é aplicado.
+
+---
+
+# Alias (AS)
+
+Quando trabalhamos com várias tabelas, escrever o nome completo de cada uma torna a consulta longa e menos legível.
+
+Para resolver isso utilizamos **Alias**.
+
+## Sem Alias
+
+```sql
+SELECT customer.first_name,
+payment.amount
+FROM customer
+INNER JOIN payment
+ON customer.customer_id = payment.customer_id;
+```
+
+## Com Alias
+
+```sql
+SELECT c.first_name,
+p.amount
+FROM customer AS c
+INNER JOIN payment AS p
+ON c.customer_id = p.customer_id;
+```
+
+Ou simplesmente:
+
+```sql
+SELECT c.first_name,
+p.amount
+FROM customer c
+INNER JOIN payment p
+ON c.customer_id = p.customer_id;
+```
+
+O Alias apenas cria um apelido temporário para facilitar a escrita da consulta.
+
+---
+
+# Vantagens do Alias
+
+- Código mais limpo
+- Melhor legibilidade
+- Facilita consultas grandes
+- Evita repetição dos nomes das tabelas
+
+---
+
+# Trabalhando com múltiplas tabelas
+
+O SQL permite realizar JOIN entre diversas tabelas ao mesmo tempo.
+
+Exemplo utilizando três tabelas:
+
+```sql
+SELECT
+c.first_name,
+a.address,
+p.amount
+
+FROM customer c
+
+INNER JOIN address a
+ON c.address_id = a.address_id
+
+INNER JOIN payment p
+ON c.customer_id = p.customer_id;
+```
+
+Neste exemplo:
+
+- A tabela **customer** fornece o nome do cliente.
+- A tabela **address** fornece o endereço.
+- A tabela **payment** fornece o valor do pagamento.
+
+Todas as informações são reunidas em uma única consulta.
+
+---
+
+# Ordem de execução
+
+Embora escrevamos a consulta de cima para baixo, o SQL executa aproximadamente nesta ordem:
+
+```text
+FROM
+JOIN
+ON
+WHERE
+GROUP BY
+HAVING
+SELECT
+ORDER BY
+LIMIT
+```
+
+Entender essa sequência facilita muito a construção de consultas complexas.
+
+---
+
+# UNION
+
+O operador **UNION** é utilizado para unir o resultado de duas ou mais consultas.
+
+Ao contrário do JOIN, ele **não junta colunas**, mas sim **empilha linhas**.
+
+## Sintaxe
+
+```sql
+SELECT coluna
+FROM tabela1
+
+UNION
+
+SELECT coluna
+FROM tabela2;
+```
+
+Exemplo
+
+Tabela Funcionários
+
+```text
+Rafael
+Maria
+```
+
+Tabela Clientes
+
+```text
+Carlos
+João
+```
+
+Consulta
+
+```sql
+SELECT nome
+FROM funcionarios
+
+UNION
+
+SELECT nome
+FROM clientes;
+```
+
+Resultado
+
+```text
+Rafael
+Maria
+Carlos
+João
+```
+
+---
+
+# UNION ALL
+
+Existe também o **UNION ALL**.
+
+A diferença é simples.
+
+## UNION
+
+Remove registros duplicados.
+
+```text
+Rafael
+Maria
+Carlos
+```
+
+---
+
+## UNION ALL
+
+Mantém todos os registros.
+
+```text
+Rafael
+Maria
+Rafael
+Carlos
+```
+
+O **UNION ALL** é mais rápido porque não precisa verificar duplicatas.
+
+---
+
+# Diferença entre JOIN e UNION
+
+| JOIN | UNION |
+|-------|-------|
+| Junta colunas de tabelas relacionadas. | Junta linhas de consultas diferentes. |
+| Utiliza chaves primárias e estrangeiras. | Não depende de relacionamento entre tabelas. |
+| Amplia as informações de um registro. | Empilha resultados de múltiplas consultas. |
+
+---
+
+# Boas práticas
+
+- Utilize **INNER JOIN** sempre que precisar relacionar tabelas.
+- Defina relacionamentos utilizando **Primary Keys** e **Foreign Keys**.
+- Utilize **Alias** para tornar consultas mais legíveis.
+- Evite selecionar todas as colunas (`SELECT *`) em consultas complexas.
+- Utilize **UNION** apenas quando precisar combinar resultados de consultas semelhantes.
+- Prefira **UNION ALL** quando souber que registros duplicados não representam problema, pois possui melhor desempenho.
+
+---
+
+# Resumo
+
+| Recurso | Finalidade |
+|----------|------------|
+| INNER JOIN | Relaciona tabelas retornando apenas registros correspondentes. |
+| WHERE com JOIN | Filtra os dados após o relacionamento entre as tabelas. |
+| Alias (AS) | Cria apelidos para tabelas ou colunas, melhorando a legibilidade das consultas. |
+| Múltiplas Tabelas | Permite relacionar diversas tabelas em uma única consulta. |
+| UNION | Une resultados de consultas diferentes removendo duplicatas. |
+| UNION ALL | Une resultados preservando todos os registros, inclusive duplicados. |
+
+---
+
+# Conclusão
+
+O **INNER JOIN** é uma das operações mais importantes da linguagem SQL, permitindo combinar informações armazenadas em diferentes tabelas de um banco de dados relacional. 
+O uso de **Alias** torna consultas mais organizadas, enquanto os **JOINs múltiplos** possibilitam consultas complexas envolvendo diversas entidades. Já o operador **UNION** é utilizado para consolidar resultados de diferentes consultas em um único conjunto de dados. 
+O domínio desses recursos é essencial para construir consultas eficientes, escaláveis e utilizadas em ambientes corporativos.
