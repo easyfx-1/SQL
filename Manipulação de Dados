@@ -1,0 +1,226 @@
+# Manipulação de Dados e Gerenciamento de Tabelas no SQL
+
+## Visão Geral
+
+Além de consultar informações em um banco de dados, uma das principais responsabilidades de um desenvolvedor ou analista é manipular registros e administrar tabelas. O SQL fornece comandos específicos para inserir, atualizar, excluir e copiar dados, além de permitir a criação e remoção de estruturas do banco.
+
+Neste módulo são abordadas as principais operações de manipulação de dados (**DML - Data Manipulation Language**) e gerenciamento de tabelas (**DDL - Data Definition Language**).
+
+---
+
+# 1. Obtendo Informações da Tabela
+
+Antes de manipular uma tabela, é importante conhecer sua estrutura.
+
+As informações incluem:
+
+- Nome das colunas
+- Tipo de dado
+- Tamanho
+- Chave Primária (Primary Key)
+- Permissão para valores NULL
+- Valores padrão (Default)
+
+Exemplo:
+
+```sql
+DESCRIBE customer;
+```
+
+ou
+
+```sql
+SHOW COLUMNS FROM customer;
+```
+
+Esses comandos permitem compreender como os dados estão organizados antes de realizar alterações.
+
+---
+
+# 2. Inserindo Registros (INSERT)
+
+O comando `INSERT` adiciona novos registros em uma tabela.
+
+Exemplo:
+
+```sql
+INSERT INTO cliente (nome, idade)
+VALUES ('João', 25);
+```
+
+Boas práticas:
+
+- Informar explicitamente o nome das colunas.
+- Respeitar o tipo de dado de cada campo.
+- Evitar depender da ordem das colunas da tabela.
+
+---
+
+# 3. Inserindo Múltiplos Registros
+
+O SQL permite inserir vários registros em uma única instrução, reduzindo o número de operações no banco e melhorando o desempenho.
+
+Exemplo:
+
+```sql
+INSERT INTO cliente (nome, idade)
+VALUES
+('Ana', 22),
+('Carlos', 31),
+('Marcos', 40);
+```
+
+Vantagens:
+
+- Maior performance
+- Código mais limpo
+- Menor quantidade de transações
+
+---
+
+# 4. Inserindo Dados em Múltiplas Tabelas
+
+Em bancos relacionais, é comum inserir dados relacionados em diferentes tabelas.
+
+Exemplo:
+
+- Cadastro de um cliente.
+- Cadastro do endereço.
+- Associação entre cliente e endereço.
+
+Esse processo normalmente utiliza:
+
+- Chaves Primárias (Primary Keys)
+- Chaves Estrangeiras (Foreign Keys)
+
+para manter a integridade dos dados.
+
+---
+
+# 5. Copiando uma Tabela
+
+É possível criar uma nova tabela utilizando outra como base.
+
+Copiar apenas a estrutura:
+
+```sql
+CREATE TABLE nova_tabela LIKE tabela_original;
+```
+
+Copiar estrutura e dados:
+
+```sql
+CREATE TABLE nova_tabela
+SELECT * FROM tabela_original;
+```
+
+Esse recurso é útil para:
+
+- Backups rápidos
+- Ambientes de teste
+- Migração de dados
+- Auditorias
+
+---
+
+# 6. Removendo uma Tabela
+
+O comando `DROP TABLE` remove completamente uma tabela do banco de dados.
+
+Exemplo:
+
+```sql
+DROP TABLE clientes;
+```
+
+⚠️ Atenção:
+
+Após sua execução, tanto a estrutura quanto todos os registros são removidos permanentemente.
+
+---
+
+# 7. Atualizando Registros (UPDATE)
+
+O comando `UPDATE` altera valores existentes.
+
+Exemplo:
+
+```sql
+UPDATE cliente
+SET idade = 30
+WHERE id = 5;
+```
+
+É extremamente importante utilizar a cláusula `WHERE`.
+
+Sem ela:
+
+```sql
+UPDATE cliente
+SET idade = 30;
+```
+
+Todos os registros da tabela serão modificados.
+
+---
+
+# 8. Removendo Registros (DELETE)
+
+O comando `DELETE` exclui registros específicos.
+
+Exemplo:
+
+```sql
+DELETE FROM cliente
+WHERE id = 5;
+```
+
+Assim como no `UPDATE`, utilizar `WHERE` evita exclusões acidentais.
+
+Sem filtro:
+
+```sql
+DELETE FROM cliente;
+```
+
+Todos os registros serão removidos, porém a estrutura da tabela permanecerá.
+
+---
+
+# Diferença entre DELETE, TRUNCATE e DROP
+
+| Comando | Remove Dados | Remove Estrutura |
+|----------|--------------|------------------|
+| DELETE | ✅ | ❌ |
+| TRUNCATE | ✅ (Todos os registros) | ❌ |
+| DROP | ✅ | ✅ |
+
+---
+
+# Boas Práticas
+
+- Sempre utilize `WHERE` em comandos `UPDATE` e `DELETE`.
+- Faça backup antes de operações destrutivas.
+- Informe explicitamente os nomes das colunas em comandos `INSERT`.
+- Verifique a estrutura da tabela antes de inserir dados.
+- Utilize transações (`BEGIN`, `COMMIT` e `ROLLBACK`) sempre que possível em ambientes de produção.
+- Nunca execute comandos destrutivos sem confirmar os filtros aplicados.
+
+---
+
+# Conceitos Aprendidos
+
+Ao concluir este módulo, você será capaz de:
+
+- Consultar a estrutura de uma tabela.
+- Inserir registros individuais e múltiplos.
+- Trabalhar com inserções relacionadas entre tabelas.
+- Copiar tabelas para backup ou testes.
+- Atualizar informações existentes.
+- Excluir registros de forma segura.
+- Remover tabelas quando necessário.
+- Aplicar boas práticas na manipulação de dados em bancos relacionais.
+
+---
+
+> A manipulação de dados é uma das atividades mais importantes no SQL. Dominar operações como `INSERT`, `UPDATE`, `DELETE` e `DROP` permite administrar bancos de dados de forma segura, eficiente e alinhada às boas práticas utilizadas em ambientes profissionais.
